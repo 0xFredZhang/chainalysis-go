@@ -16,13 +16,13 @@ func getClient() Client {
 // Entity API
 
 func TestEntityAddressRegister(t *testing.T) {
-	data, err := getClient().EntityAddressRegister("0x95222290dd7278aa3ddd389cc1e1d165cc4bafe5")
+	data, err := getClient().EntityAddressRegister("ATte1mfS3F8QMGmhVSgzjM9sPtAYumubX6")
 	assert.Nil(t, err)
 	spew.Dump(data)
 }
 
 func TestEntityAddressRetrieve(t *testing.T) {
-	data, err := getClient().EntityAddressRetrieve("0x95222290dd7278aa3ddd389cc1e1d165cc4bafe5111")
+	data, err := getClient().EntityAddressRetrieve("ATte1mfS3F8QMGmhVSgzjM9sPtAYumubXY6")
 	assert.Nil(t, err)
 	spew.Dump(data)
 }

@@ -43,7 +43,8 @@ type EntityAddressRegisterResp struct {
 }
 
 type EntityAddressRetrieveResp struct {
-	ErrorResp
+	Message string `json:"message"`
+
 	Address    string `json:"address"`
 	Risk       string `json:"risk"` // Severe, High, Medium, Low
 	RiskReason string `json:"riskReason"`
