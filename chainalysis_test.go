@@ -5,26 +5,31 @@ import (
 	"testing"
 	"time"
 
+	"github.com/bytedance/sonic"
+
 	"github.com/davecgh/go-spew/spew"
 	"github.com/stretchr/testify/assert"
 )
 
 func getClient() Client {
-	return NewClient(os.Getenv("ChainalysisAPIKey"))
+	cli := NewClient(os.Getenv("ChainalysisAPIKey"))
+	cli.SetDebug(true)
+	return cli
 }
 
 // Entity API
 
 func TestEntityAddressRegister(t *testing.T) {
-	data, err := getClient().EntityAddressRegister("ATte1mfS3F8QMGmhVSgzjM9sPtAYumubX6")
+	data, err := getClient().EntityAddressRegister("0xdcbEfFBECcE100cCE9E4b153C4e15cB885643193")
 	assert.Nil(t, err)
 	spew.Dump(data)
 }
 
 func TestEntityAddressRetrieve(t *testing.T) {
-	data, err := getClient().EntityAddressRetrieve("ATte1mfS3F8QMGmhVSgzjM9sPtAYumubXY6")
+	// RISK : 0xdcbEfFBECcE100cCE9E4b153C4e15cB885643193
+	data, err := getClient().EntityAddressRetrieve("0xdcbEfFBECcE100cCE9E4b153C4e15cB885643193")
 	assert.Nil(t, err)
-	spew.Dump(data)
+	t.Log(sonic.MarshalString(data))
 }
 
 // KYT API
@@ -33,11 +38,25 @@ func TestKYTRegisterTransfer(t *testing.T) {
 	data, err := getClient().KYTRegisterTransfer("vddGRBDsjX", KYTRegisterTransferParam{
 		Network:           "Ethereum",
 		Asset:             "ETH",
-		TransferReference: "0x7a1dd6b2b4a162279154cd1edbcc9eff3a6f02dd55bb945ed257ab8519b1cedc",
+		TransferReference: "0x8e73f0c0d8bdeab7e9f85e4fc84e0e3d3e956e3e15584fc28222e9126d9ce716",
 		Direction:         "received",
 	})
 	assert.Nil(t, err)
 	spew.Dump(data)
+}
+
+func TestKYTGetTransferSummary(t *testing.T) {
+	// 70e7170a-e7fe-3ea2-a033-2d5b51da4075 normal
+	// fadea2aa-8751-36e0-af84-b07289a2e443 risk
+	data, err := getClient().KYTGetTransferSummary("fadea2aa-8751-36e0-af84-b07289a2e443")
+	assert.Nil(t, err)
+	t.Log(sonic.MarshalString(data))
+}
+
+func TestKYTGetTransferAlerts(t *testing.T) {
+	data, err := getClient().KYTGetTransferAlerts("fadea2aa-8751-36e0-af84-b07289a2e443")
+	assert.Nil(t, err)
+	t.Log(sonic.MarshalString(data))
 }
 
 func TestKYTRegisterWithdrawalAttempt(t *testing.T) {
@@ -53,14 +72,22 @@ func TestKYTRegisterWithdrawalAttempt(t *testing.T) {
 	spew.Dump(data)
 }
 
-func TestKYTGetTransferSummary(t *testing.T) {
-	data, err := getClient().KYTGetTransferSummary("0x7a1dd6b2b4a162279154cd1edbcc9eff3a6f02dd55bb945ed257ab8519b1cedc")
+func TestKYTGetWithdrawalAttemptSummary(t *testing.T) {
+	data, err := getClient().KYTGetWithdrawalAttemptSummary("")
 	assert.Nil(t, err)
 	spew.Dump(data)
 }
 
-func TestKYTGetWithdrawalAttemptSummary(t *testing.T) {
-	data, err := getClient().KYTGetWithdrawalAttemptSummary("0x7a1dd6b2b4a162279154cd1edbcc9eff3a6f02dd55bb945ed257ab8519b1cedc")
+func TestKYTGetWithdrawalAttemptAlerts(t *testing.T) {
+	data, err := getClient().KYTGetWithdrawalAttemptAlerts("")
 	assert.Nil(t, err)
 	spew.Dump(data)
+}
+
+// Category API
+
+func TestRetrieveCategories(t *testing.T) {
+	data, err := getClient().RetrieveCategories()
+	assert.Nil(t, err)
+	t.Log(sonic.MarshalString(data))
 }

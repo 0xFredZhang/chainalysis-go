@@ -53,7 +53,7 @@ type EntityAddressRetrieveResp struct {
 		Category string `json:"category"`
 	} `json:"cluster"` // VASP?
 	AddressType            string                  `json:"addressType"`
-	AddressIdentifications []AddressIdentification `json:"addressIdentifications"`
+	AddressIdentifications []AddressIdentification `json:"addressIdentifications"` // if an address is sanctioned
 	Exposures              []Exposure              `json:"exposures"`
 	Triggers               []Trigger               `json:"triggers"`
 }

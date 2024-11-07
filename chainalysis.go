@@ -15,9 +15,14 @@ type Client interface {
 	EntityAddressRetrieve(address string) (resp EntityAddressRetrieveResp, err error)
 
 	KYTRegisterTransfer(userId string, param KYTRegisterTransferParam) (resp KYTRegisterTransferResp, err error)
-	KYTRegisterWithdrawalAttempt(userId string, param KYTRegisterWithdrawalAttemptParam) (resp KYTRegisterWithdrawalAttemptResp, err error)
 	KYTGetTransferSummary(externalId string) (resp KYTGetTransferSummaryResp, err error)
+	KYTGetTransferAlerts(externalId string) (resp KYTGetTransferAlertsResp, err error)
+
+	KYTRegisterWithdrawalAttempt(userId string, param KYTRegisterWithdrawalAttemptParam) (resp KYTRegisterWithdrawalAttemptResp, err error)
 	KYTGetWithdrawalAttemptSummary(externalId string) (resp KYTGetWithdrawalAttemptSummaryResp, err error)
+	KYTGetWithdrawalAttemptAlerts(externalId string) (resp KYTGetTransferAlertsResp, err error)
+
+	RetrieveCategories() (resp RetrieveCategoriesResp, err error)
 }
 
 type ClientImpl struct {
@@ -49,4 +54,8 @@ func (c *ClientImpl) SetTransport(transport http.RoundTripper) {
 
 func (c *ClientImpl) SetTimeout(timeout time.Duration) {
 	c.client.SetTimeout(timeout)
+}
+
+func (c *ClientImpl) SetDebug(debug bool) {
+	c.client.SetDebug(debug)
 }

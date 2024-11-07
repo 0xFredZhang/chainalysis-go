@@ -11,9 +11,11 @@ import (
 
 const (
 	urlKytRegisterTransfer            = "/api/kyt/v2/users/%s/transfers"
-	urlKycRegisterWithdrawalAttempt   = "/api/kyt/v2/users/%s/withdrawal-attempts"
 	urlKytGetTransferSummary          = "/api/kyt/v2/transfers/%s"
+	urlKytGetTransferAlerts           = "/api/kyt/v2/transfers/%s/alerts"
+	urlKycRegisterWithdrawalAttempt   = "/api/kyt/v2/users/%s/withdrawal-attempts"
 	urlKytGetWithdrawalAttemptSummary = "/api/kyt/v2/withdrawal-attempts/%s"
+	urlKytGetWithdrawalAttemptAlerts  = "/api/kyt/v2/withdrawal-attempts/%s/alerts"
 )
 
 func (c *ClientImpl) KYTRegisterTransfer(userId string, param KYTRegisterTransferParam) (resp KYTRegisterTransferResp, err error) {
@@ -27,6 +29,32 @@ func (c *ClientImpl) KYTRegisterTransfer(userId string, param KYTRegisterTransfe
 		SetResult(&resp).
 		SetError(&resp).
 		Post(fmt.Sprintf(urlKytRegisterTransfer, userId))
+	return
+}
+
+func (c *ClientImpl) KYTGetTransferSummary(externalId string) (resp KYTGetTransferSummaryResp, err error) {
+	rsp, err := c.client.R().
+		SetResult(&resp).
+		Get(fmt.Sprintf(urlKytGetTransferSummary, externalId))
+	if err != nil {
+		return resp, err
+	}
+	if rsp.IsError() {
+		return resp, fmt.Errorf("%s", string(rsp.Body()))
+	}
+	return
+}
+
+func (c *ClientImpl) KYTGetTransferAlerts(externalId string) (resp KYTGetTransferAlertsResp, err error) {
+	rsp, err := c.client.R().
+		SetResult(&resp).
+		Get(fmt.Sprintf(urlKytGetTransferAlerts, externalId))
+	if err != nil {
+		return resp, err
+	}
+	if rsp.IsError() {
+		return resp, fmt.Errorf("%s", string(rsp.Body()))
+	}
 	return
 }
 
@@ -44,19 +72,29 @@ func (c *ClientImpl) KYTRegisterWithdrawalAttempt(userId string, param KYTRegist
 	return
 }
 
-func (c *ClientImpl) KYTGetTransferSummary(externalId string) (resp KYTGetTransferSummaryResp, err error) {
-	_, err = c.client.R().
+func (c *ClientImpl) KYTGetWithdrawalAttemptSummary(externalId string) (resp KYTGetWithdrawalAttemptSummaryResp, err error) {
+	rsp, err := c.client.R().
 		SetResult(&resp).
-		SetError(&resp).
-		Get(fmt.Sprintf(urlKytGetTransferSummary, externalId))
+		Get(fmt.Sprintf(urlKytGetWithdrawalAttemptSummary, externalId))
+	if err != nil {
+		return resp, err
+	}
+	if rsp.IsError() {
+		return resp, fmt.Errorf("%s", string(rsp.Body()))
+	}
 	return
 }
 
-func (c *ClientImpl) KYTGetWithdrawalAttemptSummary(externalId string) (resp KYTGetWithdrawalAttemptSummaryResp, err error) {
-	_, err = c.client.R().
+func (c *ClientImpl) KYTGetWithdrawalAttemptAlerts(externalId string) (resp KYTGetTransferAlertsResp, err error) {
+	rsp, err := c.client.R().
 		SetResult(&resp).
-		SetError(&resp).
-		Get(fmt.Sprintf(urlKytGetWithdrawalAttemptSummary, externalId))
+		Get(fmt.Sprintf(urlKytGetWithdrawalAttemptAlerts, externalId))
+	if err != nil {
+		return resp, err
+	}
+	if rsp.IsError() {
+		return resp, fmt.Errorf("%s", string(rsp.Body()))
+	}
 	return
 }
 
@@ -144,6 +182,20 @@ type KYTGetWithdrawalAttemptSummaryResp struct {
 	UsdAmount         float64 `json:"usdAmount"`
 	UpdatedAt         string  `json:"updatedAt"`
 	ExternalId        string  `json:"externalId"`
+}
+
+type KYTGetTransferAlertsResp struct {
+	ErrorResp
+	Alerts []KYTTransferAlert `json:"alerts"`
+}
+
+type KYTTransferAlert struct {
+	AlertLevel   string  `json:"alertLevel"` // SEVERE, HIGH, MEDIUM, LOW
+	Service      string  `json:"service"`
+	ExternalId   string  `json:"externalId"`
+	AlertAmount  float64 `json:"alertAmount"`
+	ExposureType string  `json:"exposureType"`
+	CategoryId   int64   `json:"categoryId"`
 }
 
 type ErrorResp struct {
