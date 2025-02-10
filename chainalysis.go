@@ -32,15 +32,19 @@ type ClientImpl struct {
 	client *resty.Client
 }
 
-func NewClient(apiKey string) *ClientImpl {
+func NewClient(apiKey string, host ...string) *ClientImpl {
 	client := resty.New()
-	client.SetBaseURL(baseUrl)
 	client.SetTimeout(30 * time.Second)
 	client.SetHeader("Content-Type", "application/json")
 	client.SetHeader("Token", apiKey)
+	baseHost := baseUrl
+	if len(host) > 0 {
+		baseHost = host[0]
+	}
+	client.SetBaseURL(baseHost)
 
 	return &ClientImpl{
-		host:   baseUrl,
+		host:   baseHost,
 		apiKey: apiKey,
 		client: client,
 	}

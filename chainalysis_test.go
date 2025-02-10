@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"github.com/bytedance/sonic"
-
 	"github.com/davecgh/go-spew/spew"
 	"github.com/stretchr/testify/assert"
 )
@@ -20,14 +19,14 @@ func getClient() Client {
 // Entity API
 
 func TestEntityAddressRegister(t *testing.T) {
-	data, err := getClient().EntityAddressRegister("0xdcbEfFBECcE100cCE9E4b153C4e15cB885643193")
+	data, err := getClient().EntityAddressRegister("0x4675C7e5BaAFBFFbca748158bEcBA61ef3b0a263")
 	assert.Nil(t, err)
 	spew.Dump(data)
 }
 
 func TestEntityAddressRetrieve(t *testing.T) {
 	// RISK : 0xdcbEfFBECcE100cCE9E4b153C4e15cB885643193
-	data, err := getClient().EntityAddressRetrieve("0xdcbEfFBECcE100cCE9E4b153C4e15cB885643193")
+	data, err := getClient().EntityAddressRetrieve("0x4675C7e5BaAFBFFbca748158bEcBA61ef3b0a263")
 	assert.Nil(t, err)
 	t.Log(sonic.MarshalString(data))
 }
@@ -61,10 +60,10 @@ func TestKYTGetTransferAlerts(t *testing.T) {
 
 func TestKYTRegisterWithdrawalAttempt(t *testing.T) {
 	data, err := getClient().KYTRegisterWithdrawalAttempt("vddGRBDsjX", KYTRegisterWithdrawalAttemptParam{
-		Network:           "Ethereum",
+		Network:           "Arbitrum",
 		Asset:             "ETH",
-		Address:           "0x8589427373D6D84E98730D7795D8f6f8731FDA16",
-		AttemptIdentifier: "",
+		Address:           "0x4675C7e5BaAFBFFbca748158bEcBA61ef3b0a263",
+		AttemptIdentifier: "rXfXciGRqh",
 		AssetAmount:       100,
 		AttemptTimestamp:  time.Now().UTC().Add(-10 * time.Second).Format(iso8601),
 	})
@@ -73,13 +72,13 @@ func TestKYTRegisterWithdrawalAttempt(t *testing.T) {
 }
 
 func TestKYTGetWithdrawalAttemptSummary(t *testing.T) {
-	data, err := getClient().KYTGetWithdrawalAttemptSummary("")
+	data, err := getClient().KYTGetWithdrawalAttemptSummary("1cd7bfad-4d97-39b9-a3ae-82b1c344035b")
 	assert.Nil(t, err)
 	spew.Dump(data)
 }
 
 func TestKYTGetWithdrawalAttemptAlerts(t *testing.T) {
-	data, err := getClient().KYTGetWithdrawalAttemptAlerts("")
+	data, err := getClient().KYTGetWithdrawalAttemptAlerts("1cd7bfad-4d97-39b9-a3ae-82b1c344035b")
 	assert.Nil(t, err)
 	spew.Dump(data)
 }
